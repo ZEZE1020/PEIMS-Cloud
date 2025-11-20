@@ -6,8 +6,13 @@
 **Server:** `localhost`  
 **Port:** `3306`  
 **User:** `root`  
-**Connection String Location:** `PEIMSV3Cs/app.config`
 
+### ⚠️ CRITICAL: Connection String Reality
+
+**App.config Status:** EXISTS but NOT USED  
+**Actual Implementation:** Hardcoded inline in each form
+
+**App.config (Defined but unused):**
 ```xml
 <connectionStrings>
     <add name="PEIMSV3Cs.Properties.Settings.pharmaConnectionString" 
@@ -16,9 +21,31 @@
 </connectionStrings>
 ```
 
+**Actual Connection Strings (Hardcoded in forms):**
+```csharp
+// Pattern 1 (Most forms)
+string strConn = "server=localhost;user id=root;database=pharma;password=;";
+
+// Pattern 2 (Login forms)
+string myConnection = "datasource=localhost;port=3306;database=pharma;username=root;password=";
+
+// Pattern 3 (frmEmployee insert)
+string constring = "Datasource=localhost;Database=pharma;Uid=root;Pwd=;";
+```
+
+**Files:** See [TRACEABILITY.md](TRACEABILITY.md) for exact locations.
+
+---
+
+## 🔗 Traceability
+
+For exact file paths, line numbers, and code snippets, see [TRACEABILITY.md](TRACEABILITY.md)
+
 ---
 
 ## Form → Table Mapping
+
+**Verified Form Count:** 20 data entry forms (previously documented as 18)
 
 ### Authentication & User Management
 
@@ -257,20 +284,49 @@ ad.Update(this.newDataSet.tablename);
 
 ### Special Cases
 
-**frmMainLogin** - Direct SQL query for authentication:
+**frmMainLogin.cs** (Line ~26) - Direct SQL query for authentication:
 ```csharp
-SELECT * FROM pharma.users WHERE username='...' and password='...'
+MySqlCommand SelectCommand = new MySqlCommand(
+    "SELECT * FROM pharma.users WHERE username='" + this.userNameTextBox.Text + 
+    "' and password='" + passwordTextBox.Text + "' ; ", myConn);
 ```
-⚠️ **Security Issue:** Vulnerable to SQL injection
+⚠️ **Security Issue:** SQL Injection via string concatenation
 
-**frmEmployee** - Uses both DataAdapter and direct INSERT:
+**frmUALogin1.cs** (Line ~26) - Same vulnerability:
 ```csharp
-insert into pharma.employees (...) values (...)
+MySqlCommand SelectCommand = new MySqlCommand(
+    "SELECT * FROM pharma.users WHERE username='" + this.userNameTextBox.Text + 
+    "' and password='" + passwordTextBox.Text + "' ; ", myConn);
 ```
 
-**frmCases** - Implements search functionality:
+**frmUALogin2.cs** (Line ~26) - Same vulnerability:
 ```csharp
-select * from pharma.cases where (caseID = '...') OR (diseaseID = '...')
+MySqlCommand SelectCommand = new MySqlCommand(
+    "SELECT * FROM pharma.users WHERE username='" + this.userNameTextBox.Text + 
+    "' and password='" + passwordTextBox.Text + "' ; ", myConn);
+```
+
+**frmEmployee.cs** (Line ~220) - Direct INSERT with concatenation:
+```csharp
+string Query = "insert into pharma.employees (employeeID,firstName,lastName,...) " +
+    "values ('" + this.employeeIDTextBox.Text + "','" + this.firstNameTextBox.Text + "',...)";
+```
+⚠️ **Security Issue:** SQL Injection via string concatenation
+
+**frmCases.cs** (Line ~160) - Search with concatenation:
+```csharp
+s = "select * from pharma.cases where (caseID = '" + caseIDTextBox.Text + 
+    "') OR (diseaseID = '" + diseaseIDTextBox.Text + "')";
+```
+⚠️ **Security Issue:** SQL Injection via string concatenation
+
+**Fix Example:**
+```csharp
+// Replace string concatenation with parameters
+MySqlCommand cmd = new MySqlCommand(
+    "SELECT * FROM pharma.users WHERE username=@user AND password=@pass", conn);
+cmd.Parameters.AddWithValue("@user", userNameTextBox.Text);
+cmd.Parameters.AddWithValue("@pass", passwordTextBox.Text);
 ```
 
 ---

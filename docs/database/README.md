@@ -58,6 +58,32 @@ Complete database schema, relationships, and SQL documentation for PEIMS.
 
 ---
 
+### [TRACEABILITY.md](TRACEABILITY.md)
+**⭐ Exact code traceability**
+
+- File paths for all 20 forms
+- Exact line numbers for SQL queries
+- Vulnerability locations
+- Connection string patterns
+- Verified form count
+
+**Use for:** Code fixes, security audits, exact references
+
+---
+
+### [SECURITY-FIXES.md](SECURITY-FIXES.md)
+**⭐ Security vulnerability fixes**
+
+- 5 SQL injection fixes with code
+- Password hashing implementation
+- Connection string centralization
+- Database user security
+- Testing procedures
+
+**Use for:** Implementing security fixes, code examples
+
+---
+
 ## Database Overview
 
 **Name:** pharma  

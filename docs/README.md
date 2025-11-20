@@ -16,8 +16,10 @@ Contains:
 - `erd-diagram.md` - Entity relationship diagrams and relationships
 - `db-quick-reference.md` - Quick lookup guide for tables and queries
 - `table-relationships.sql` - SQL script for foreign keys and indexes
+- `TRACEABILITY.md` - ⭐ Exact file paths, line numbers, and code snippets
+- `SECURITY-FIXES.md` - ⭐ Detailed security vulnerability fixes with code examples
 
-**Use when:** Working with database, understanding data flow, implementing queries
+**Use when:** Working with database, understanding data flow, implementing queries, fixing security issues
 
 ---
 
@@ -86,6 +88,8 @@ Contains:
 | [erd-diagram.md](database/erd-diagram.md) | Entity relationships, visual diagrams | Architects, DBAs |
 | [db-quick-reference.md](database/db-quick-reference.md) | Quick lookup guide | All |
 | [table-relationships.sql](database/table-relationships.sql) | SQL implementation script | DBAs |
+| [TRACEABILITY.md](database/TRACEABILITY.md) | ⭐ Exact file paths and line numbers | Developers, Security |
+| [SECURITY-FIXES.md](database/SECURITY-FIXES.md) | ⭐ Security vulnerability fixes | Developers, Security |
 
 ### Architecture Documentation
 | File | Description | Audience |
@@ -134,10 +138,11 @@ Contains:
 ## 📊 Project Statistics
 
 - **Database Tables:** 17
-- **Application Forms:** 18 data entry + 16 reports
+- **Application Forms:** 20 data entry + 16 reports (corrected)
 - **Relationships Mapped:** 30+ foreign keys
-- **Documentation Files:** 11 files across 4 categories
+- **Documentation Files:** 14 files across 4 categories
 - **SQL Scripts:** 1 comprehensive script
+- **Vulnerabilities Found:** 5 SQL injection instances
 
 ---
 
@@ -152,12 +157,13 @@ Contains:
 
 ## ⚠️ Critical Issues
 
-1. **SQL Injection** - 3 forms vulnerable
+1. **SQL Injection** - 5 forms vulnerable (with exact line numbers)
 2. **Plain Text Passwords** - users table
-3. **Hardcoded Connections** - All forms
+3. **Hardcoded Connections** - All 20 forms (App.config NOT used)
 4. **Missing FK Constraints** - Database level
+5. **Using root Account** - All connections
 
-See [architecture/database-analysis-summary.md](architecture/database-analysis-summary.md) for details.
+See [database/TRACEABILITY.md](database/TRACEABILITY.md) and [database/SECURITY-FIXES.md](database/SECURITY-FIXES.md) for details.
 
 ---
 
